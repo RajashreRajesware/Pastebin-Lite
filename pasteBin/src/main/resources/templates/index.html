@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PasteBin Lite</title>
+    <style>
+        body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+         }
+        textarea {
+         width: 100%;
+        height: 100px;
+        }
+        input, button {
+         padding: 10px;
+          margin: 5px 0;
+          width: 100%;
+          }
+        .paste {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-top: 10px;
+        white-space: pre-wrap;
+        }
+        .error {
+        color: red;
+         }
+    </style>
+</head>
+<body>
+<h1>PasteBin Lite</h1>
+
+<h2>Create a Paste</h2>
+<form action="/create" method="post">
+    <textarea name="content" placeholder="Enter your paste..." required></textarea>
+    <input type="number" name="expiry" placeholder="Expiry in minutes (optional)">
+    <input type="number" name="maxViews" placeholder="Max views (optional)">
+    <button type="submit">Create Paste</button>
+</form>
+
+<div th:if="${pasteCreated}" class="paste">
+    <h3>Paste Created:</h3>
+    Key: <b th:text="${pasteCreated.key}"></b><br>
+    Content: <span th:text="${pasteCreated.content}"></span><br>
+    Created At: <span th:text="${pasteCreated.createdAt}"></span><br>
+    Expires At: <span th:text="${pasteCreated.expiresAt != null ? pasteCreated.expiresAt : 'Never'}"></span><br>
+    Views: <span th:text="${pasteCreated.views}"></span>
+</div>
+
+<hr>
+
+<h2>Get Paste by Key</h2>
+<form action="/get" method="post">
+    <input type="text" name="key" placeholder="Enter paste key" required>
+    <button type="submit">Get Paste</button>
+</form>
+
+<div th:if="${pasteResult}" class="paste">
+    <h3>Paste Result:</h3>
+    Key: <b th:text="${pasteResult.key}"></b><br>
+    Content: <span th:text="${pasteResult.content}"></span><br>
+    Created At: <span th:text="${pasteResult.createdAt}"></span><br>
+    Expires At: <span th:text="${pasteResult.expiresAt != null ? pasteResult.expiresAt : 'Never'}"></span><br>
+    Views: <span th:text="${pasteResult.views}"></span>
+</div>
+
+<div th:if="${error}" class="error">
+    <p th:text="${error}"></p>
+</div>
+
+</body>
+</html>
