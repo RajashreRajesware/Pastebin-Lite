@@ -1,0 +1,37 @@
+
+
+services:
+  pastebin-app:
+    build: .
+    container_name: pastebin-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/pastebindb
+      DB_USERNAME: pastebin_user
+      DB_PASSWORD: pastebin_pass
+    networks:
+      - pastebin-network
+
+  postgres:
+    image: postgres:16
+    container_name: pastebin-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: pastebindb
+      POSTGRES_USER: pastebin_user
+      POSTGRES_PASSWORD: pastebin_pass
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pastebin_user -d pastebindb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pastebin-network
+
+networks:
+  pastebin-network:
